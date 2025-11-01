@@ -37,7 +37,7 @@ vi.mock('../../services/user', () => ({
     getUserWithPosts: vi.fn(),
 }));
 
-import { getUserWithPosts } from '../../services/user';
+import { getUserWithPosts } from '../../services/user-service';
 const mockedGetUserWithPosts = vi.mocked(getUserWithPosts);
 
 describe('GET /api/user/:userId', () => {

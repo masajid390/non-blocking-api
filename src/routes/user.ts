@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { getUserWithPosts } from '../services/user';
+import { getUserWithPosts } from '../services/user-service';
 import z from 'zod';
 import { userResponseSchema } from '../schemas/user-schema';
 import { formatZodError } from '../utils';
