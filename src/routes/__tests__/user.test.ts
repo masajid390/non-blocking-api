@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import userRoute from '../user';
+import swrCachePlugin from '../../plugins/swr-cache';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 // Mock data matching the actual schema
@@ -33,11 +34,12 @@ const mockPosts = [
 ];
 
 // We will mock the service that the route uses so tests don't perform network I/O.
-vi.mock('../../services/user', () => ({
+vi.mock('../../services/user-service', () => ({
     getUserWithPosts: vi.fn(),
 }));
 
 import { getUserWithPosts } from '../../services/user-service';
+import { FastifyInstanceWithConfig } from '../../types';
 const mockedGetUserWithPosts = vi.mocked(getUserWithPosts);
 
 describe('GET /api/user/:userId', () => {
@@ -45,6 +47,10 @@ describe('GET /api/user/:userId', () => {
 
     beforeEach(async () => {
         server = Fastify();
+        // provide a minimal `config` object like fastify-env would
+        (server as unknown as FastifyInstanceWithConfig).config = { PORT: '3000', JSON_PLACEHOLDER_API_URL: undefined };
+        // register SWR cache plugin so fastify.swr is available to the route
+        await server.register(swrCachePlugin);
         await server.register(userRoute, { prefix: '/api' });
     });
 
@@ -74,8 +80,8 @@ describe('GET /api/user/:userId', () => {
         expect(res.statusCode).toBe(200);
         const body = JSON.parse(res.payload);
         expect(body).toEqual(mockData);
-        // Verify the service was called with number type
-        expect(mockedGetUserWithPosts).toHaveBeenCalledWith(2);
+        // Verify the service was called with number type and no baseUrl (test env)
+        expect(mockedGetUserWithPosts).toHaveBeenCalledWith(2, undefined);
     });
 
     it('returns 400 for non-numeric userId', async () => {
