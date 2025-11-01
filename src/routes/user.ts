@@ -1,21 +1,36 @@
 import { FastifyInstance } from 'fastify';
 import { getUserWithPosts } from '../services/user';
+import z from 'zod';
+import { userResponseSchema } from '../schemas/user-schema';
+import { formatZodError } from '../utils';
 
 export default async function userRoute(fastify: FastifyInstance) {
-  fastify.get<{ Params: { userId: number } }>('/user/:userId', async (request, reply) => {
-    const { userId } = request.params;
 
-    if (!userId) {
+  const paramsSchema = z.object({
+    userId: z.number(),
+  });
+
+  fastify.get<{ Params: { userId: number } }>('/user/:userId', async (request, reply) => {
+
+    const parsedParams = paramsSchema.safeParse(request.params);
+    if (!parsedParams.success) {
       return reply.status(400).send({
         error: 'Invalid query parameter',
-        details: 'userId is required',
+        details: formatZodError(parsedParams.error)
       });
     }
 
-    try {
-      const { userId } = request.params;
+    const { userId } = parsedParams.data;
 
-      return await getUserWithPosts(userId);
+    try {
+      const result = await getUserWithPosts(userId);
+      const data = userResponseSchema.safeParse(result);
+
+      if (!data.success) {
+        return reply.status(500).send({ error: 'Failed to validate user data', details: formatZodError(data.error) });
+      }
+
+      return reply.send(data.data);
     } catch (error: unknown) {
       fastify.log.error(error);
       return reply.status(500).send({ error: 'Failed to fetch user data' });
