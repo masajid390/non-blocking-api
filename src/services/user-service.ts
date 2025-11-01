@@ -1,8 +1,11 @@
-export async function getUserWithPosts(userId: number, baseUrl: string) {
-  const [user, posts] = await Promise.all([
-    fetch(`${baseUrl}/users/${userId}`),
-    fetch(`${baseUrl}/posts?userId=${userId}`),
-  ]);
+import { fetchJson, retry } from '../utils';
 
-  return { user: await user.json(), posts: await posts.json() };
+export async function getUserWithPosts(userId: number, baseUrl: string) {
+  return retry(async () => {
+    const [user, posts] = await Promise.all([
+      fetchJson(`${baseUrl}/users/${userId}`),
+      fetchJson(`${baseUrl}/posts?userId=${userId}`),
+    ]);
+    return { user, posts };
+  }, 3, 500);
 }

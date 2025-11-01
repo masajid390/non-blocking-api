@@ -34,3 +34,26 @@ export function getfastifyEnvOptions() {
 
     return options
 }
+
+/** Helper to fetch and JSON-decode a URL, throwing on non-OK responses */
+export async function fetchJson<T = unknown>(url: string) {
+    const res = await fetch(url);
+    if (!res.ok) {
+        throw new Error(`fetchJson failed: ${res.status} ${res.statusText}`);
+    }
+    return (await res.json()) as T;
+}
+
+export async function retry<T>(fn: () => Promise<T>, retries = 3, delayMs = 500): Promise<T> {
+    let attempt = 0;
+    while (attempt < retries) {
+        try {
+            return await fn();
+        } catch (err) {
+            attempt++;
+            if (attempt >= retries) throw err;
+            await new Promise((res) => setTimeout(res, delayMs));
+        }
+    }
+    throw new Error('Retry attempts exceeded');
+}
