@@ -2,12 +2,14 @@ import Fastify from 'fastify';
 import type { FastifyInstance } from 'fastify';
 import fastifyEnv from '@fastify/env';
 import userRoute from './routes/user';
+import { FastifyInstanceWithConfig } from './types';
 
 const schema = {
   type: 'object',
-  required: ['PORT'],
+  required: ['PORT', 'JSON_PLACEHOLDER_API_URL'],
   properties: {
     PORT: { type: 'string', default: '3000' },
+    JSON_PLACEHOLDER_API_URL: { type: 'string' },
   },
 };
 
@@ -33,10 +35,8 @@ const start = async () => {
 
   // fastify-env decorates the server with a `config` object. Declare the shape
   // we expect and assert the extended server type so TypeScript knows about it.
-  type EnvConfig = { PORT: string };
-  type ServerWithConfig = FastifyInstance & { config: EnvConfig };
 
-  const serverWithConfig = server as unknown as ServerWithConfig;
+  const serverWithConfig = server as unknown as FastifyInstanceWithConfig;
   const port = Number(serverWithConfig.config.PORT) || 3000;
 
   server.get('/health', async () => ({ status: 'ok' }));

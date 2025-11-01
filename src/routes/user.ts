@@ -3,8 +3,9 @@ import { getUserWithPosts } from '../services/user-service';
 import z from 'zod';
 import { userResponseSchema } from '../schemas/user-schema';
 import { formatZodError } from '../utils';
+import { FastifyInstanceWithConfig } from '../types';
 
-export default async function userRoute(fastify: FastifyInstance) {
+export default async function userRoute(fastify: FastifyInstanceWithConfig) {
 
   const paramsSchema = z.object({
     userId: z.coerce.number().positive(),
@@ -23,7 +24,7 @@ export default async function userRoute(fastify: FastifyInstance) {
     const { userId } = parsedParams.data;
 
     try {
-      const result = await getUserWithPosts(userId);
+      const result = await getUserWithPosts(userId, fastify.config.JSON_PLACEHOLDER_API_URL);
       const data = userResponseSchema.safeParse(result);
 
       if (!data.success) {

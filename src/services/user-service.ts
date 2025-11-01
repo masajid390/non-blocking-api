@@ -1,10 +1,7 @@
-const USER_API = 'https://jsonplaceholder.typicode.com/users';
-const POSTS_API = 'https://jsonplaceholder.typicode.com/posts';
-
-export async function getUserWithPosts(userId: number) {
+export async function getUserWithPosts(userId: number, baseUrl: string) {
   const [user, posts] = await Promise.all([
-    fetch(`${USER_API}/${userId}`),
-    fetch(`${POSTS_API}?userId=${userId}`),
+    fetch(`${baseUrl}/users/${userId}`),
+    fetch(`${baseUrl}/posts?userId=${userId}`),
   ]);
 
   return { user: await user.json(), posts: await posts.json() };
