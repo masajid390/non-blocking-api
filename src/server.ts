@@ -7,22 +7,22 @@ const schema = {
   type: 'object',
   required: ['PORT'],
   properties: {
-    PORT: { type: 'string', default: '3000' }
-  }
+    PORT: { type: 'string', default: '3000' },
+  },
 };
 
 const options: { confKey: string; schema: object; dotenv: boolean } = {
   confKey: 'config', // optional, default: 'config'
   schema: schema,
-  dotenv: true
+  dotenv: true,
 };
 
 const start = async () => {
   const server: FastifyInstance = Fastify({
     logger: {
       transport: { target: 'pino-pretty' },
-      level: 'info'
-    }
+      level: 'info',
+    },
   });
 
   // register fastify-env to populate server.config from .env
@@ -30,7 +30,6 @@ const start = async () => {
 
   // Register routes
   server.register(userRoute, { prefix: '/api' });
-
 
   // fastify-env decorates the server with a `config` object. Declare the shape
   // we expect and assert the extended server type so TypeScript knows about it.
