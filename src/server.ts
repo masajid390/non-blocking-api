@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import type { FastifyInstance } from 'fastify';
 import fastifyEnv from '@fastify/env';
+import userRoute from './routes/user';
 
 const schema = {
   type: 'object',
@@ -26,6 +27,10 @@ const start = async () => {
 
   // register fastify-env to populate server.config from .env
   await server.register(fastifyEnv, options);
+
+  // Register routes
+  server.register(userRoute, { prefix: '/api' });
+
 
   // fastify-env decorates the server with a `config` object. Declare the shape
   // we expect and assert the extended server type so TypeScript knows about it.
