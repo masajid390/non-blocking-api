@@ -2,7 +2,6 @@ import Fastify from 'fastify';
 import type { FastifyInstance } from 'fastify';
 import fastifyEnv from '@fastify/env';
 import userRoute from './routes/user';
-import { FastifyInstanceWithConfig } from './types';
 import { getfastifyEnvOptions } from './utils';
 import swrCachePlugin from './plugins/swr-cache';
 
@@ -27,8 +26,7 @@ const start = async () => {
   // fastify-env decorates the server with a `config` object. Declare the shape
   // we expect and assert the extended server type so TypeScript knows about it.
 
-  const serverWithConfig = server as unknown as FastifyInstanceWithConfig;
-  const port = Number(serverWithConfig.config.PORT) || 3000;
+  const port = Number(server.config.PORT) || 3000;
 
 
   try {

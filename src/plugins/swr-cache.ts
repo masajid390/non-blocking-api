@@ -1,7 +1,6 @@
-import { FastifyPluginAsync } from 'fastify';
+import { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import fp from 'fastify-plugin';
-import NodeCache from 'node-cache';
-import { FastifyInstanceWithConfig } from '../types';
+import NodeCache from 'node-cache'
 
 interface SWRCache {
     /**
@@ -12,7 +11,7 @@ interface SWRCache {
     get<T>(key: string, fetcher: () => Promise<T>): Promise<T>;
 }
 
-const swrCachePlugin: FastifyPluginAsync = async (fastify: FastifyInstanceWithConfig) => {
+const swrCachePlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
     const cache = new NodeCache();
 
     const swr: SWRCache = {

@@ -1,4 +1,4 @@
-import Fastify from 'fastify';
+import Fastify, { FastifyInstance } from 'fastify';
 import userRoute from '../user';
 import swrCachePlugin from '../../plugins/swr-cache';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -39,16 +39,15 @@ vi.mock('../../services/user-service', () => ({
 }));
 
 import { getUserWithPosts } from '../../services/user-service';
-import { FastifyInstanceWithConfig } from '../../types';
 const mockedGetUserWithPosts = vi.mocked(getUserWithPosts);
 
 describe('GET /api/user/:userId', () => {
-    let server: ReturnType<typeof Fastify>;
+    let server: FastifyInstance;
 
     beforeEach(async () => {
         server = Fastify();
         // provide a minimal `config` object like fastify-env would
-        (server as unknown as FastifyInstanceWithConfig).config = { PORT: '3000', JSON_PLACEHOLDER_API_URL: undefined };
+        server.config = { PORT: '3000', JSON_PLACEHOLDER_API_URL: undefined };
         // register SWR cache plugin so fastify.swr is available to the route
         await server.register(swrCachePlugin);
         await server.register(userRoute, { prefix: '/api' });

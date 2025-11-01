@@ -3,9 +3,8 @@ import { getUserWithPosts } from '../services/user-service';
 import z from 'zod';
 import { userResponseSchema } from '../schemas/user-schema';
 import { formatZodError } from '../utils';
-import { FastifyInstanceWithConfig } from '../types';
 
-export default async function userRoute(fastify: FastifyInstanceWithConfig) {
+export default async function userRoute(fastify: FastifyInstance) {
 
   const paramsSchema = z.object({
     userId: z.coerce.number().positive(),
