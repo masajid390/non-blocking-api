@@ -15,3 +15,22 @@ export function formatZodError(error: ZodError) {
         {}
     )
 };
+
+export function getfastifyEnvOptions() {
+    const schema = {
+        type: 'object',
+        required: ['PORT', 'JSON_PLACEHOLDER_API_URL'],
+        properties: {
+            PORT: { type: 'string', default: '3000' },
+            JSON_PLACEHOLDER_API_URL: { type: 'string' },
+        },
+    } as const;
+
+    const options: { confKey: string; schema: typeof schema; dotenv: boolean } = {
+        confKey: 'config', // optional, default: 'config'
+        schema,
+        dotenv: true,
+    };
+
+    return options
+}
