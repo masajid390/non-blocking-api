@@ -18,7 +18,6 @@ const swrCachePlugin: FastifyPluginAsync = async (fastify: FastifyInstanceWithCo
     const swr: SWRCache = {
         async get<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
             const cached = cache.get<T>(key);
-            console.log(cached)
             if (cached) {
                 // Background refresh
                 fetcher()
