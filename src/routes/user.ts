@@ -7,10 +7,10 @@ import { formatZodError } from '../utils';
 export default async function userRoute(fastify: FastifyInstance) {
 
   const paramsSchema = z.object({
-    userId: z.number(),
+    userId: z.coerce.number().positive(),
   });
 
-  fastify.get<{ Params: { userId: number } }>('/user/:userId', async (request, reply) => {
+  fastify.get<{ Params: { userId: string } }>('/user/:userId', async (request, reply) => {
 
     const parsedParams = paramsSchema.safeParse(request.params);
     if (!parsedParams.success) {
