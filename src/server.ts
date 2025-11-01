@@ -4,6 +4,7 @@ import fastifyEnv from '@fastify/env';
 import userRoute from './routes/user';
 import { FastifyInstanceWithConfig } from './types';
 import { getfastifyEnvOptions } from './utils';
+import swrCachePlugin from './plugins/swr-cache';
 
 const start = async () => {
   const server: FastifyInstance = Fastify({
@@ -15,6 +16,9 @@ const start = async () => {
 
   // register fastify-env to populate server.config from .env
   await server.register(fastifyEnv, getfastifyEnvOptions());
+
+  // register plugins
+  await server.register(swrCachePlugin);
 
   // Register routes
   server.register(userRoute, { prefix: '/api' });

@@ -22,10 +22,13 @@ export default async function userRoute(fastify: FastifyInstanceWithConfig) {
     }
 
     const { userId } = parsedParams.data;
+    const cacheKey = `user:${userId}`
 
     try {
-      const result = await getUserWithPosts(userId, fastify.config.JSON_PLACEHOLDER_API_URL);
-      const data = userResponseSchema.safeParse(result);
+      const data = await fastify.swr(cacheKey, async () => {
+        const result = await getUserWithPosts(userId, fastify.config.JSON_PLACEHOLDER_API_URL);
+        return userResponseSchema.safeParse(result);  // validate before caching
+      });
 
       if (!data.success) {
         return reply.status(500).send({ error: 'Failed to validate user data', details: formatZodError(data.error) });
