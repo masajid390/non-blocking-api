@@ -7,6 +7,7 @@ import swrCachePlugin from './plugins/swr-cache';
 import metricsPlugin from './plugins/metrics';
 import compressPlugin from './plugins/compress';
 import rateLimitPlugin from './plugins/rate-limit';
+import helmetPlugin from './plugins/helmet';
 
 const start = async () => {
   const server: FastifyInstance = Fastify({
@@ -21,6 +22,7 @@ const start = async () => {
 
   // register plugins
   await server.register(metricsPlugin);
+  await server.register(helmetPlugin);
   await server.register(compressPlugin);
   await server.register(rateLimitPlugin);
   await server.register(swrCachePlugin);
