@@ -18,8 +18,8 @@ A production-ready Fastify + TypeScript API with comprehensive security, caching
 
 ### Performance Features
 - **SWR Cache** - Stale-while-revalidate caching
-- **Retry Logic** - Automatic retries with exponential backoff
-- **Request Timeout** - 5s default timeout with AbortController
+- **Retry Logic** - Automatic retries with exponential backoff (3 attempts, 500ms delay)
+- **Request Timeout** - 5s default timeout with AbortController (auto-aborts long requests)
 - **Concurrent Fetching** - Parallel API calls with Promise.all
 
 ### Observability
@@ -223,11 +223,6 @@ lsof -i :3000
 # Change port in .env
 echo "PORT=3001" >> .env
 ```
-
-### Metrics not appearing in Grafana
-1. Check Prometheus is scraping: http://localhost:9090/targets
-2. Verify API is reachable from Docker: `host.docker.internal:3000`
-3. Restart containers: `docker-compose restart`
 
 ### Tests failing
 ```bash
