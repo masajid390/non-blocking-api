@@ -32,7 +32,7 @@ export default async function userRoute(fastify: FastifyInstance) {
 
       if (!data.success) {
         fastify.log.error({ userId, cacheKey, error: data.error }, 'Failed to validate user data');
-        return reply.status(500).send({ error: 'Failed to validate user data', details: formatZodError(data.error) });
+        return reply.status(502).send({ error: 'Failed to validate user data', details: formatZodError(data.error) });
       }
 
       return reply.send(data.data);

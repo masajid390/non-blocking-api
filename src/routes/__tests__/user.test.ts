@@ -121,12 +121,12 @@ describe('GET /api/user/:userId', () => {
         expect(body).toHaveProperty('error', 'Failed to fetch user data');
     });
 
-    it('returns 500 when response fails schema validation', async () => {
+    it('returns 502 when response fails schema validation', async () => {
         const invalidData = { user: { id: 1 }, posts: [] }; // Missing required fields
         mockedGetUserWithPosts.mockResolvedValueOnce(invalidData);
 
         const res = await server.inject({ method: 'GET', url: '/api/user/1' });
-        expect(res.statusCode).toBe(500);
+        expect(res.statusCode).toBe(502);
         const body = JSON.parse(res.payload);
         expect(body).toHaveProperty('error', 'Failed to validate user data');
         expect(body).toHaveProperty('details');
