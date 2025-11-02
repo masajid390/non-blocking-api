@@ -39,6 +39,7 @@ vi.mock('../../services/user-service', () => ({
 }));
 
 import { getUserWithPosts } from '../../services/user-service';
+import { ErrorCode } from '../../types';
 const mockedGetUserWithPosts = vi.mocked(getUserWithPosts);
 
 describe('GET /api/user/:userId', () => {
@@ -87,7 +88,7 @@ describe('GET /api/user/:userId', () => {
         const res = await server.inject({ method: 'GET', url: '/api/user/abc' });
         expect(res.statusCode).toBe(400);
         const body = JSON.parse(res.payload);
-        expect(body).toHaveProperty('error', 'Invalid User ID parameter');
+        expect(body).toHaveProperty('code', ErrorCode.INVALID_PARAMETER);
         expect(body).toHaveProperty('details');
     });
 
@@ -95,7 +96,7 @@ describe('GET /api/user/:userId', () => {
         const res = await server.inject({ method: 'GET', url: '/api/user/-5' });
         expect(res.statusCode).toBe(400);
         const body = JSON.parse(res.payload);
-        expect(body).toHaveProperty('error', 'Invalid User ID parameter');
+        expect(body).toHaveProperty('code', ErrorCode.INVALID_PARAMETER);
         expect(body).toHaveProperty('details');
     });
 
@@ -103,7 +104,7 @@ describe('GET /api/user/:userId', () => {
         const res = await server.inject({ method: 'GET', url: '/api/user/0' });
         expect(res.statusCode).toBe(400);
         const body = JSON.parse(res.payload);
-        expect(body).toHaveProperty('error', 'Invalid User ID parameter');
+        expect(body).toHaveProperty('code', ErrorCode.INVALID_PARAMETER);
         expect(body).toHaveProperty('details');
     });
 
@@ -118,7 +119,7 @@ describe('GET /api/user/:userId', () => {
         const res = await server.inject({ method: 'GET', url: '/api/user/5' });
         expect(res.statusCode).toBe(500);
         const body = JSON.parse(res.payload);
-        expect(body).toHaveProperty('error', 'Failed to fetch user data');
+        expect(body).toHaveProperty('code', ErrorCode.INTERNAL_ERROR);
     });
 
     it('returns 502 when response fails schema validation', async () => {
@@ -128,7 +129,7 @@ describe('GET /api/user/:userId', () => {
         const res = await server.inject({ method: 'GET', url: '/api/user/1' });
         expect(res.statusCode).toBe(502);
         const body = JSON.parse(res.payload);
-        expect(body).toHaveProperty('error', 'Failed to validate user data');
+        expect(body).toHaveProperty('code', ErrorCode.UPSTREAM_INVALID_RESPONSE);
         expect(body).toHaveProperty('details');
     });
 });
