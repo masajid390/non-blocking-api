@@ -6,6 +6,7 @@ declare module 'fastify' {
         config: {
             PORT: string;
             JSON_PLACEHOLDER_API_URL: string | undefined;
+            NODE_ENV: string;
         };
 
         /** swr-cache plugin decoration */

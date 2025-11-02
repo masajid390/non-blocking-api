@@ -19,10 +19,11 @@ export function formatZodError(error: ZodError) {
 export function getfastifyEnvOptions() {
     const schema = {
         type: 'object',
-        required: ['PORT', 'JSON_PLACEHOLDER_API_URL'],
+        required: ['JSON_PLACEHOLDER_API_URL'],
         properties: {
             PORT: { type: 'string', default: '3000' },
             JSON_PLACEHOLDER_API_URL: { type: 'string' },
+            NODE_ENV: { type: 'string', default: 'development' },
         },
     } as const;
 
