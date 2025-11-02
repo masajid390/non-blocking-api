@@ -5,6 +5,7 @@ import userRoute from './routes/user';
 import { getfastifyEnvOptions } from './utils';
 import swrCachePlugin from './plugins/swr-cache';
 import metricsPlugin from './plugins/metrics';
+import compressPlugin from './plugins/compress';
 
 const start = async () => {
   const server: FastifyInstance = Fastify({
@@ -19,6 +20,7 @@ const start = async () => {
 
   // register plugins
   await server.register(metricsPlugin);
+  await server.register(compressPlugin);
   await server.register(swrCachePlugin);
 
   // Register routes
