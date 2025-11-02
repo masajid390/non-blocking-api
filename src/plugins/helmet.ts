@@ -10,13 +10,13 @@ const helmetPlugin: FastifyPluginAsync = async (fastify) => {
         // Enable CSP in production; disable in dev to avoid blocking hot-reload/dev assets
         contentSecurityPolicy: isProduction
             ? {
-                  directives: {
-                      defaultSrc: ["'self'"],
-                      styleSrc: ["'self'", "'unsafe-inline'"],
-                      scriptSrc: ["'self'"],
-                      imgSrc: ["'self'", 'data:', 'https:'],
-                  },
-              }
+                directives: {
+                    defaultSrc: ["'self'"],
+                    styleSrc: ["'self'", "'unsafe-inline'"],
+                    scriptSrc: ["'self'"],
+                    imgSrc: ["'self'", 'data:', 'https:'],
+                },
+            }
             : false,
     });
     fastify.log.info(`helmet plugin registered (CSP: ${isProduction ? 'enabled' : 'disabled'})`);
