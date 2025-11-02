@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import type { FastifyInstance } from 'fastify';
 import fastifyEnv from '@fastify/env';
+import homeRoute from './routes/home';
 import userRoute from './routes/user';
 import { getfastifyEnvOptions } from './utils';
 import swrCachePlugin from './plugins/swr-cache';
@@ -42,24 +43,20 @@ const start = async () => {
     await server.register(swrCachePlugin);
     server.log.info('✓ SWR cache plugin registered');
 
-    // Swagger docs (non-production by default)
-    if (server.config.NODE_ENV !== 'production') {
-      try {
-        await server.register(swaggerPlugin);
-        server.log.info('✓ Swagger docs available at /docs');
-      } catch (err) {
-        server.log.error({ err }, 'Failed to register Swagger docs');
-      }
-    }
+    await server.register(swaggerPlugin);
+    server.log.info('✓ Swagger docs available at /docs');
 
     // Register routes
-    server.register(userRoute, { prefix: '/api' });
+    await server.register(homeRoute);
+    await server.register(userRoute, { prefix: '/api' });
+
     server.get('/health', async (req, reply) => {
       if (isShuttingDown) {
         return reply.code(503).send({ status: 'shutting_down' });
       }
       return { status: 'ok' };
     });
+
     server.log.info('✓ Routes registered');
 
     // fastify-env decorates the server with a `config` object. Declare the shape

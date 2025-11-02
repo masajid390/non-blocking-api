@@ -4,15 +4,13 @@
   "private": true,
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp -r src/views dist/views",
     "start": "tsx src/server.ts",
     "start:prod": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
     "test": "vitest",
     "test:ci": "vitest --run",
-    "generate:openapi": "tsx scripts/generate-openapi.ts",
-    "docs": "NODE_ENV=development pnpm run generate:openapi && NODE_ENV=development tsx src/server.ts",
-    "docs:serve": "PORT=3001 pnpm run docs"
+    "generate:openapi": "tsx scripts/generate-openapi.ts"
   },
   "dependencies": {
     "@fastify/compress": "^8.1.0",
