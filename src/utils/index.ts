@@ -36,6 +36,16 @@ export function getfastifyEnvOptions() {
     return options
 }
 
+// Lightweight HTTP error with status code so callers (and retry) can react
+export class HttpError extends Error {
+    status: number;
+    constructor(status: number, message?: string) {
+        super(message ?? `HTTP ${status}`);
+        this.name = 'HttpError';
+        this.status = status;
+    }
+}
+
 /** Helper to fetch and JSON-decode a URL with timeout, throwing on non-OK responses */
 export async function fetchJson<T = unknown>(url: string, timeout = 5000): Promise<T> {
     const controller = new AbortController();
@@ -44,7 +54,8 @@ export async function fetchJson<T = unknown>(url: string, timeout = 5000): Promi
     try {
         const response = await fetch(url, { signal: controller.signal });
         if (!response.ok) {
-            throw new Error(`fetchJson failed: ${response.status} ${response.statusText}`);
+            // Throw structured HttpError so retry logic can skip 4xx
+            throw new HttpError(response.status, `fetchJson failed: ${response.status} ${response.statusText}`);
         }
         return response.json();
     } finally {
@@ -59,6 +70,10 @@ export async function retry<T>(fn: () => Promise<T>, retries = 3, delayMs = 500)
             return await fn();
         } catch (err) {
             attempt++;
+            // Don't retry on HTTP client errors (4xx)
+            if (err instanceof HttpError && err.status >= 400 && err.status < 500) {
+                throw err;
+            }
             if (attempt >= retries) throw err;
             await new Promise((res) => setTimeout(res, delayMs));
         }
