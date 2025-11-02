@@ -20,32 +20,41 @@ const start = async () => {
   // Track shutdown state to signal load balancers via /health
   let isShuttingDown = false;
 
-  // register fastify-env to populate server.config from .env
-  await server.register(fastifyEnv, getfastifyEnvOptions());
-
-  // register plugins
-  await server.register(metricsPlugin);
-  await server.register(helmetPlugin);
-  await server.register(compressPlugin);
-  await server.register(rateLimitPlugin);
-  await server.register(swrCachePlugin);
-
-  // Register routes
-  server.register(userRoute, { prefix: '/api' });
-  server.get('/health', async (req, reply) => {
-    if (isShuttingDown) {
-      return reply.code(503).send({ status: 'shutting_down' });
-    }
-    return { status: 'ok' };
-  });
-
-  // fastify-env decorates the server with a `config` object. Declare the shape
-  // we expect and assert the extended server type so TypeScript knows about it.
-
-  const port = Number(server.config.PORT) || 3000;
-
-
   try {
+    // register fastify-env to populate server.config from .env
+    await server.register(fastifyEnv, getfastifyEnvOptions());
+    server.log.info('✓ Environment configuration loaded');
+
+    // register plugins
+    await server.register(metricsPlugin);
+    server.log.info('✓ Metrics plugin registered');
+
+    await server.register(helmetPlugin);
+    server.log.info('✓ Helmet security plugin registered');
+
+    await server.register(compressPlugin);
+    server.log.info('✓ Compression plugin registered');
+
+    await server.register(rateLimitPlugin);
+    server.log.info('✓ Rate limit plugin registered');
+
+    await server.register(swrCachePlugin);
+    server.log.info('✓ SWR cache plugin registered');
+
+    // Register routes
+    server.register(userRoute, { prefix: '/api' });
+    server.get('/health', async (req, reply) => {
+      if (isShuttingDown) {
+        return reply.code(503).send({ status: 'shutting_down' });
+      }
+      return { status: 'ok' };
+    });
+    server.log.info('✓ Routes registered');
+
+    // fastify-env decorates the server with a `config` object. Declare the shape
+    // we expect and assert the extended server type so TypeScript knows about it.
+
+    const port = Number(server.config.PORT) || 3000;
     await server.listen({ port, host: '0.0.0.0' });
     server.log.info(`Server listening on ${port}`);
 
@@ -71,17 +80,22 @@ const start = async () => {
       }
     };
 
-    process.on('SIGTERM', closeGracefully);
-    process.on('SIGINT', closeGracefully);
+    // Register signal handlers with error protection
+    try {
+      process.on('SIGTERM', closeGracefully);
+      process.on('SIGINT', closeGracefully);
+      server.log.info('Signal handlers registered (SIGTERM, SIGINT)');
+    } catch (err) {
+      server.log.error({ err }, 'Failed to register signal handlers');
+    }
 
-    // Log plugin/server close sequence
-    server.addHook('onClose', async (instance) => {
-      instance.log.info('Fastify onClose hook executed');
-    });
   } catch (err) {
-    server.log.error(err);
+    server.log.error({ err }, 'Fatal error during server startup');
     process.exit(1);
   }
 };
 
-start();
+start().catch((err) => {
+  console.error('Unhandled error in start():', err);
+  process.exit(1);
+});
