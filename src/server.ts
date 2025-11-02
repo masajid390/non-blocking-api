@@ -8,6 +8,7 @@ import metricsPlugin from './plugins/metrics';
 import compressPlugin from './plugins/compress';
 import rateLimitPlugin from './plugins/rate-limit';
 import helmetPlugin from './plugins/helmet';
+import swaggerPlugin from './plugins/swagger';
 
 const start = async () => {
   const server: FastifyInstance = Fastify({
@@ -40,6 +41,16 @@ const start = async () => {
 
     await server.register(swrCachePlugin);
     server.log.info('✓ SWR cache plugin registered');
+
+    // Swagger docs (non-production by default)
+    if (server.config.NODE_ENV !== 'production') {
+      try {
+        await server.register(swaggerPlugin);
+        server.log.info('✓ Swagger docs available at /docs');
+      } catch (err) {
+        server.log.error({ err }, 'Failed to register Swagger docs');
+      }
+    }
 
     // Register routes
     server.register(userRoute, { prefix: '/api' });

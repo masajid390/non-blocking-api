@@ -10,7 +10,9 @@
     "dev": "tsx watch src/server.ts",
     "test": "vitest",
     "test:ci": "vitest --run",
-    "generate:openapi": "tsx scripts/generate-openapi.ts"
+    "generate:openapi": "tsx scripts/generate-openapi.ts",
+    "docs": "NODE_ENV=development pnpm run generate:openapi && NODE_ENV=development tsx src/server.ts",
+    "docs:serve": "PORT=3001 pnpm run docs"
   },
   "dependencies": {
     "@fastify/compress": "^8.1.0",
@@ -26,6 +28,8 @@
   },
   "devDependencies": {
     "@asteasolutions/zod-to-openapi": "^7.0.0",
+    "@fastify/swagger": "^9.5.2",
+    "@fastify/swagger-ui": "^5.2.3",
     "@types/node": "^24.9.2",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",

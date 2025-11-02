@@ -10,87 +10,91 @@ import { join } from 'node:path';
 
 const components = {
     schemas: {
-        User: {
-            type: 'object',
-            required: ['id', 'name', 'username', 'email', 'address', 'phone', 'website', 'company'],
-            properties: {
-                id: { type: 'number', example: 1 },
-                name: { type: 'string', example: 'Leanne Graham' },
-                username: { type: 'string', example: 'Bret' },
-                email: { type: 'string', format: 'email', example: 'Sincere@april.biz' },
-                address: {
-                    type: 'object',
-                    required: ['street', 'suite', 'city', 'zipcode'],
-                    properties: {
-                        street: { type: 'string', example: 'Kulas Light' },
-                        suite: { type: 'string', example: 'Apt. 556' },
-                        city: { type: 'string', example: 'Gwenborough' },
-                        zipcode: { type: 'string', example: '92998-3874' },
-                    },
-                },
-                phone: { type: 'string', example: '1-770-736-8031 x56442' },
-                website: { type: 'string', example: 'hildegard.org' },
-                company: {
-                    type: 'object',
-                    required: ['name', 'catchPhrase', 'bs'],
-                    properties: {
-                        name: { type: 'string', example: 'Romaguera-Crona' },
-                        catchPhrase: { type: 'string', example: 'Multi-layered client-server neural-net' },
-                        bs: { type: 'string', example: 'harness real-time e-markets' },
-                    },
-                },
-            },
-        },
-        Post: {
-            type: 'object',
-            required: ['userId', 'id', 'title', 'body'],
-            properties: {
-                userId: { type: 'number', example: 1 },
-                id: { type: 'number', example: 1 },
-                title: { type: 'string', example: 'sunt aut facere repellat' },
-                body: { type: 'string', example: 'quia et suscipit suscipit recusandae' },
-            },
-        },
+        // Success response schema
         UserResponse: {
             type: 'object',
             required: ['user', 'posts'],
             properties: {
-                user: { $ref: '#/components/schemas/User' },
-                posts: { type: 'array', items: { $ref: '#/components/schemas/Post' } },
-            },
-        },
-        ErrorWithDetails: {
-            type: 'object',
-            required: ['error', 'details'],
-            properties: {
-                error: { type: 'string', example: 'Invalid User ID parameter' },
-                details: {
+                user: {
                     type: 'object',
-                    additionalProperties: { type: 'array', items: { type: 'string' } },
-                    example: { 'userId': ['Expected number, received string'] },
+                    required: ['id', 'name', 'username', 'email', 'address', 'phone', 'website', 'company'],
+                    properties: {
+                        id: { type: 'number', example: 1 },
+                        name: { type: 'string', example: 'Leanne Graham' },
+                        username: { type: 'string', example: 'Bret' },
+                        email: { type: 'string', format: 'email', example: 'Sincere@april.biz' },
+                        address: {
+                            type: 'object',
+                            required: ['street', 'suite', 'city', 'zipcode'],
+                            properties: {
+                                street: { type: 'string', example: 'Kulas Light' },
+                                suite: { type: 'string', example: 'Apt. 556' },
+                                city: { type: 'string', example: 'Gwenborough' },
+                                zipcode: { type: 'string', example: '92998-3874' },
+                            },
+                        },
+                        phone: { type: 'string', example: '1-770-736-8031 x56442' },
+                        website: { type: 'string', example: 'hildegard.org' },
+                        company: {
+                            type: 'object',
+                            required: ['name', 'catchPhrase', 'bs'],
+                            properties: {
+                                name: { type: 'string', example: 'Romaguera-Crona' },
+                                catchPhrase: { type: 'string', example: 'Multi-layered client-server neural-net' },
+                                bs: { type: 'string', example: 'harness real-time e-markets' },
+                            },
+                        },
+                    },
+                },
+                posts: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        required: ['userId', 'id', 'title', 'body'],
+                        properties: {
+                            userId: { type: 'number', example: 1 },
+                            id: { type: 'number', example: 1 },
+                            title: { type: 'string', example: 'sunt aut facere repellat' },
+                            body: { type: 'string', example: 'quia et suscipit suscipit recusandae' },
+                        },
+                    },
                 },
             },
         },
-        GenericError: {
+        // Unified error response schema (covers 400, 429, 500, 502)
+        ErrorResponse: {
             type: 'object',
-            required: ['error'],
             properties: {
-                error: { type: 'string', example: 'Failed to fetch user data' },
+                error: {
+                    type: 'string',
+                    description: 'Error message describing what went wrong',
+                    example: 'Invalid User ID parameter',
+                },
+                details: {
+                    type: 'object',
+                    description: 'Optional validation details (present for 400 and 502)',
+                    additionalProperties: { type: 'array', items: { type: 'string' } },
+                    example: { userId: ['Expected number, received string'] },
+                },
+                statusCode: {
+                    type: 'integer',
+                    description: 'HTTP status code (present for 429)',
+                    example: 429,
+                },
+                message: {
+                    type: 'string',
+                    description: 'Additional message (present for 429)',
+                    example: 'Rate limit exceeded, retry later',
+                },
             },
-        },
-        TooManyRequestsError: {
-            type: 'object',
-            required: ['statusCode', 'error', 'message'],
-            properties: {
-                statusCode: { type: 'integer', example: 429 },
-                error: { type: 'string', example: 'Too Many Requests' },
-                message: { type: 'string', example: 'Rate limit exceeded, retry later' },
+            required: ['error'],
+            example: {
+                error: 'Invalid User ID parameter',
+                details: { userId: ['Expected number, received string'] },
             },
         },
     },
-} as const;
-
-const document = {
+} as const; const document = {
     openapi: '3.0.3',
     info: {
         title: 'Non-Blocking API - User Service',
@@ -122,20 +126,50 @@ const document = {
                         content: { 'application/json': { schema: { $ref: '#/components/schemas/UserResponse' } } },
                     },
                     '400': {
-                        description: 'Invalid User ID parameter',
-                        content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorWithDetails' } } },
+                        description: 'Invalid User ID parameter (validation failed)',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/ErrorResponse' },
+                                example: {
+                                    error: 'Invalid User ID parameter',
+                                    details: { userId: ['Expected number, received string'] },
+                                },
+                            },
+                        },
                     },
                     '429': {
-                        description: 'Too many requests (rate limit)',
-                        content: { 'application/json': { schema: { $ref: '#/components/schemas/TooManyRequestsError' } } },
-                    },
-                    '502': {
-                        description: 'Failed to validate user data (schema validation)',
-                        content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorWithDetails' } } },
+                        description: 'Too many requests (rate limit exceeded)',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/ErrorResponse' },
+                                example: {
+                                    statusCode: 429,
+                                    error: 'Too Many Requests',
+                                    message: 'Rate limit exceeded, retry later',
+                                },
+                            },
+                        },
                     },
                     '500': {
                         description: 'Failed to fetch user data (upstream failure or unexpected error)',
-                        content: { 'application/json': { schema: { $ref: '#/components/schemas/GenericError' } } },
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/ErrorResponse' },
+                                example: { error: 'Failed to fetch user data' },
+                            },
+                        },
+                    },
+                    '502': {
+                        description: 'Failed to validate user data (response schema validation failed)',
+                        content: {
+                            'application/json': {
+                                schema: { $ref: '#/components/schemas/ErrorResponse' },
+                                example: {
+                                    error: 'Failed to validate user data',
+                                    details: { 'user.email': ['Invalid email'] },
+                                },
+                            },
+                        },
                     },
                 },
             },
