@@ -128,7 +128,25 @@ Response (200):
 
 Error responses:
 - `400` - Invalid userId parameter
-- `500` - Service failure or validation error
+- `502` - Response failed schema validation
+- `500` - Service failure or unexpected error
+
+## API documentation (OpenAPI/Swagger)
+
+Generate an OpenAPI spec for `GET /api/user/{userId}` based on the current schemas and route behavior:
+
+```bash
+pnpm run generate:openapi
+```
+
+Output: `openapi/openapi.json`
+
+Documented responses:
+- 200: Successful response with `user` and `posts`
+- 400: Invalid `userId` parameter (includes `details`)
+- 429: Too many requests (rate limit)
+- 502: Response failed schema validation before caching
+- 500: Upstream failure or unexpected error
 
 ## Project Structure
 

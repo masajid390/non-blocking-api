@@ -32,3 +32,8 @@ export const userResponseSchema = z.object({
   user: userSchema,
   posts: z.array(postSchema),
 });
+
+// Exported param schema so other modules (e.g., OpenAPI generator) can reuse it
+export const userIdParamSchema = z.object({
+  userId: z.coerce.number().positive(),
+});

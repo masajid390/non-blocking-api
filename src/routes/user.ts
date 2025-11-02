@@ -1,14 +1,12 @@
 import { FastifyInstance } from 'fastify';
 import { getUserWithPosts } from '../services/user-service';
 import z from 'zod';
-import { userResponseSchema } from '../schemas/user-schema';
+import { userResponseSchema, userIdParamSchema } from '../schemas/user-schema';
 import { formatZodError } from '../utils';
 
 export default async function userRoute(fastify: FastifyInstance) {
 
-  const paramsSchema = z.object({
-    userId: z.coerce.number().positive(),
-  });
+  const paramsSchema = userIdParamSchema;
 
   fastify.get<{ Params: { userId: string } }>('/user/:userId', async (request, reply) => {
 
