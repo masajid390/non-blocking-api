@@ -87,7 +87,7 @@ describe('GET /api/user/:userId', () => {
         const res = await server.inject({ method: 'GET', url: '/api/user/abc' });
         expect(res.statusCode).toBe(400);
         const body = JSON.parse(res.payload);
-        expect(body).toHaveProperty('error', 'Invalid query parameter');
+        expect(body).toHaveProperty('error', 'Invalid User ID parameter');
         expect(body).toHaveProperty('details');
     });
 
@@ -95,7 +95,7 @@ describe('GET /api/user/:userId', () => {
         const res = await server.inject({ method: 'GET', url: '/api/user/-5' });
         expect(res.statusCode).toBe(400);
         const body = JSON.parse(res.payload);
-        expect(body).toHaveProperty('error', 'Invalid query parameter');
+        expect(body).toHaveProperty('error', 'Invalid User ID parameter');
         expect(body).toHaveProperty('details');
     });
 
@@ -103,7 +103,7 @@ describe('GET /api/user/:userId', () => {
         const res = await server.inject({ method: 'GET', url: '/api/user/0' });
         expect(res.statusCode).toBe(400);
         const body = JSON.parse(res.payload);
-        expect(body).toHaveProperty('error', 'Invalid query parameter');
+        expect(body).toHaveProperty('error', 'Invalid User ID parameter');
         expect(body).toHaveProperty('details');
     });
 
