@@ -7,6 +7,7 @@ const compressPlugin: FastifyPluginAsync = async (fastify) => {
     await fastify.register(compress, {
         // Enable common encodings; brotli will be used when clients support it
         encodings: ['gzip', 'deflate', 'br'],
+        threshold: 1024, // only compress responses larger than 1 KB
     });
     fastify.log.info('compress plugin registered');
 };
