@@ -36,13 +36,20 @@ export function getfastifyEnvOptions() {
     return options
 }
 
-/** Helper to fetch and JSON-decode a URL, throwing on non-OK responses */
-export async function fetchJson<T = unknown>(url: string) {
-    const res = await fetch(url);
-    if (!res.ok) {
-        throw new Error(`fetchJson failed: ${res.status} ${res.statusText}`);
+/** Helper to fetch and JSON-decode a URL with timeout, throwing on non-OK responses */
+export async function fetchJson<T = unknown>(url: string, timeout = 5000): Promise<T> {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+
+    try {
+        const response = await fetch(url, { signal: controller.signal });
+        if (!response.ok) {
+            throw new Error(`fetchJson failed: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
+    } finally {
+        clearTimeout(id);
     }
-    return (await res.json()) as T;
 }
 
 export async function retry<T>(fn: () => Promise<T>, retries = 3, delayMs = 500): Promise<T> {
