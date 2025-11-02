@@ -15,7 +15,7 @@ export default async function userRoute(fastify: FastifyInstance) {
     const parsedParams = paramsSchema.safeParse(request.params);
     if (!parsedParams.success) {
       return reply.status(400).send({
-        error: 'Invalid query parameter',
+        error: 'Invalid User ID parameter',
         details: formatZodError(parsedParams.error)
       });
     }
