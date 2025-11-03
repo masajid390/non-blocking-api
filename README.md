@@ -4,6 +4,10 @@
 
 A production-ready Fastify + TypeScript API with comprehensive security, caching, and resilience features. Built with best practices for performance and observability.
 
+Live API: https://non-blocking-api-production.up.railway.app/
+
+Swagger UI: https://non-blocking-api-production.up.railway.app/docs
+
 ## Features
 
 ### Core Stack
