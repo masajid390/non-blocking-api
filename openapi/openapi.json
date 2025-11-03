@@ -9,6 +9,10 @@
     {
       "url": "http://localhost:3000",
       "description": "Local development server"
+    },
+    {
+      "url": "https://non-blocking-api-production.up.railway.app",
+      "description": "Production server"
     }
   ],
   "paths": {
