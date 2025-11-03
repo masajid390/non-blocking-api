@@ -1,6 +1,6 @@
 # non-blocking-api
 
-A production-ready Fastify + TypeScript API with comprehensive security, caching, monitoring, and resilience features. Built with best practices for performance and observability.
+A production-ready Fastify + TypeScript API with comprehensive security, caching, and resilience features. Built with best practices for performance and observability.
 
 ## Features
 
@@ -151,26 +151,55 @@ Documented responses:
 ## Project Structure
 
 ```
-src/
-├── server.ts              # Main server entry point
-├── routes/
-│   ├── user.ts           # User API route with caching
-│   └── __tests__/        # Route tests
-├── services/
-│   └── user-service.ts   # Business logic with retry
-├── plugins/
-│   ├── compress.ts       # Compression plugin
-│   ├── helmet.ts         # Security headers
-│   ├── rate-limit.ts     # Rate limiting
-│   ├── metrics.ts        # Prometheus metrics
-│   ├── swr-cache.ts      # SWR cache plugin
-│   └── __tests__/        # Plugin tests
-├── schemas/
-│   └── user-schema.ts    # Zod schemas
-├── utils/
-│   └── index.ts          # Utilities (fetchJson, retry, etc.)
-└── types/
-    └── fastify.d.ts      # TypeScript augmentations
+.
+├── .github/
+│   ├── workflows/
+│   │   └── ci.yml                  # CI pipeline (build, test)
+│   └── SECRETS.md                  # GitHub secrets setup guide
+├── src/
+│   ├── server.ts                   # Main server entry point
+│   ├── routes/
+│   │   ├── home.ts                 # HTML home page route
+│   │   ├── user.ts                 # User API route with caching
+│   │   └── __tests__/              # Route tests
+│   ├── services/
+│   │   └── user-service.ts         # Business logic with retry
+│   ├── plugins/
+│   │   ├── compress.ts             # Compression plugin
+│   │   ├── helmet.ts               # Security headers
+│   │   ├── rate-limit.ts           # Rate limiting
+│   │   ├── metrics.ts              # Prometheus metrics
+│   │   ├── swagger.ts              # OpenAPI/Swagger UI
+│   │   ├── swr-cache.ts            # SWR cache plugin
+│   │   └── __tests__/              # Plugin tests
+│   ├── schemas/
+│   │   └── user-schema.ts          # Zod validation schemas
+│   ├── views/
+│   │   └── home.html               # HTML template for home page
+│   ├── utils/
+│   │   ├── index.ts                # Utilities (fetchJson, retry, etc.)
+│   │   └── __tests__/              # Utility tests
+│   └── types/
+│       ├── fastify.d.ts            # TypeScript augmentations
+│       └── index.ts                # Shared types
+├── scripts/
+│   └── generate-openapi.ts         # OpenAPI spec generator
+├── openapi/
+│   └── openapi.json                # Generated OpenAPI specification
+├── dist/                           # Compiled TypeScript output
+├── Dockerfile                      # Multi-stage Docker build
+├── docker-compose.yml              # Docker Compose configuration
+├── .dockerignore                   # Docker build exclusions
+├── railway.json                    # Railway deployment config
+├── .nvmrc                          # Node version specification
+├── .env.example                    # Environment variables template
+├── tsconfig.json                   # TypeScript configuration
+├── package.json                    # Dependencies and scripts
+├── pnpm-lock.yaml                  # Lock file for pnpm
+├── DOCKER.md                       # Docker usage guide
+├── DOCKER-ENV.md                   # Docker environment variables guide
+├── RAILWAY.md                      # Railway deployment guide
+└── README.md                       # This file
 ```
 
 ## Environment Modes
