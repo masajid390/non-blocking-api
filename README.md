@@ -1,5 +1,7 @@
 # non-blocking-api
 
+> Note: Parts of this project were implemented with the assistance of an AI coding assistant (code, docs, and CI setup).
+
 A production-ready Fastify + TypeScript API with comprehensive security, caching, and resilience features. Built with best practices for performance and observability.
 
 ## Features
