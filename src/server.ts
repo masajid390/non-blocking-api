@@ -28,17 +28,17 @@ const start = async () => {
     server.log.info('✓ Environment configuration loaded');
 
     // register plugins
-    await server.register(metricsPlugin);
-    server.log.info('✓ Metrics plugin registered');
-
     await server.register(helmetPlugin);
     server.log.info('✓ Helmet security plugin registered');
 
-    await server.register(compressPlugin);
-    server.log.info('✓ Compression plugin registered');
-
     await server.register(rateLimitPlugin);
     server.log.info('✓ Rate limit plugin registered');
+
+    await server.register(metricsPlugin);
+    server.log.info('✓ Metrics plugin registered');
+
+    await server.register(compressPlugin);
+    server.log.info('✓ Compression plugin registered');
 
     await server.register(swrCachePlugin);
     server.log.info('✓ SWR cache plugin registered');
